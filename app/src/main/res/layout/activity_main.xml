@@ -32,9 +32,9 @@
         app:navGraph="@navigation/mobile_navigation" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="129dp"
-        android:layout_height="121dp"
+        android:id="@+id/playButton"
+        android:layout_width="134dp"
+        android:layout_height="88dp"
         android:layout_marginBottom="104dp"
         android:fontFamily="sans-serif-medium"
         android:text="▶"
@@ -47,7 +47,7 @@
         android:layout_width="77dp"
         android:layout_height="wrap_content"
         android:text="Click to play"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/playButton"
         tools:layout_editor_absoluteX="170dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
