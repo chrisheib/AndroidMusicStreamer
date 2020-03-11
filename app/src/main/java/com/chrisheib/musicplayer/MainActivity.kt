@@ -1,12 +1,14 @@
 package com.chrisheib.musicplayer
 
-import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.MediaPlayer
+import android.net.Uri
+import android.opengl.Visibility
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -15,8 +17,14 @@ import com.downloader.Error
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
+import kotlin.math.roundToInt
+
 
 class MainActivity : AppCompatActivity() {
+
+    var mediaPlayer : MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,24 +44,45 @@ class MainActivity : AppCompatActivity() {
 
         // set on-click listener
         btn_click_me.setOnClickListener {
-            buttonPlayOnClick()
+            if (playButton.text == "▶"){
+                downloadAndPlay()
+            } else if (playButton.text == "■"){
+                stopPlayer()
+            }
         }
     }
 
-    private fun buttonPlayOnClick(){
+    private fun downloadAndPlay(){
         // https://blog.mindorks.com/how-to-download-a-file-in-android-and-show-the-progress-very-easily
+
         PRDownloader.initialize(applicationContext);
-        var url = "http://192.168.2.109:80/"
-        val path = applicationContext.getExternalFilesDir(null)?.absolutePath
-        //var dirPath = "/music/"
-        var fileName = "test.mp3"
-        val start = PRDownloader.download(url, path, fileName)
+        val url = "http://192.168.2.109:80/"
+
+        // https://gist.github.com/lopspower/76421751b21594c69eb2
+        // https://github.com/lopspower/BestAndroidGists
+
+        val path = applicationContext.getExternalFilesDir(null)?.absolutePath + "/download/"
+        val fileName = "test.mp3"
+        val fullPath = """$path$fileName"""
+
+        val myFile = File(fullPath)
+        if (myFile.exists()) {
+            myFile.delete()
+        }
+
+        playButton.text = "⌛"
+        progressBar.visibility = View.VISIBLE
+
+        PRDownloader.download(url, path, fileName)
             .build()
-            .setOnProgressListener { progress -> Toast.makeText(applicationContext,"Success! $progress",Toast.LENGTH_LONG).show()
-            }
+            .setOnProgressListener { progress -> progressBar.progress = ((progress.currentBytes.div(progress.totalBytes.toFloat())) * 100).toDouble().roundToInt()}
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
                     Toast.makeText(applicationContext, "Success!", Toast.LENGTH_LONG).show()
+                    mediaPlayer = MediaPlayer.create(applicationContext, Uri.parse(fullPath))
+                    mediaPlayer?.start()
+                    playButton.text = "■"
+                    progressBar.visibility = View.GONE
                 }
 
                 override fun onError(error: Error?) {
@@ -64,13 +93,10 @@ class MainActivity : AppCompatActivity() {
                     ).show()
                 }
             })
+    }
 
-        val sampleUrl = "http://192.168.2.109:80/" // your URL here
-        val mediaPlayer: MediaPlayer? = MediaPlayer().apply {
-            //setAudioAttributes(AudioAttributes) //to send the object to the initialized state
-            setDataSource(sampleUrl) //to set media source and send the object to the initialized state
-            prepare() //to send the object to the prepared state, this may take time for fetching and decoding
-            start() //to start the music and send the object to started state
-        }
+    private fun stopPlayer(){
+        mediaPlayer?.stop()
+        playButton.text = "▶"
     }
 }

@@ -33,14 +33,14 @@
 
     <Button
         android:id="@+id/playButton"
-        android:layout_width="134dp"
-        android:layout_height="88dp"
+        android:layout_width="402dp"
+        android:layout_height="118dp"
         android:layout_marginBottom="104dp"
         android:fontFamily="sans-serif-medium"
         android:text="▶"
         android:textSize="60sp"
         app:layout_constraintBottom_toBottomOf="@+id/nav_host_fragment"
-        tools:layout_editor_absoluteX="142dp" />
+        tools:layout_editor_absoluteX="8dp" />
 
     <TextView
         android:id="@+id/textView"
@@ -49,5 +49,14 @@
         android:text="Click to play"
         app:layout_constraintBottom_toTopOf="@+id/playButton"
         tools:layout_editor_absoluteX="170dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="408dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="420dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
