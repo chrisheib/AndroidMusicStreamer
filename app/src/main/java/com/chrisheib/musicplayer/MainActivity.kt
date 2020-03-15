@@ -53,9 +53,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun downloadAndPlay(){
-        // https://blog.mindorks.com/how-to-download-a-file-in-android-and-show-the-progress-very-easily
 
-        PRDownloader.initialize(applicationContext);
+        // Plan:
+        // 1.: Infos requesten (liedID),
+        // 2.: Check, ob Datei vorhanden,
+        // 3.: sonst: Datei anfordern (liedID),
+        // 4.: Datei abspielen
+
+        // https://blog.mindorks.com/how-to-download-a-file-in-android-and-show-the-progress-very-easily
+        // https://www.baeldung.com/kotlin-khttp
+
+        PRDownloader.initialize(applicationContext)
         val url = "http://192.168.2.109:80/"
 
         // https://gist.github.com/lopspower/76421751b21594c69eb2
@@ -73,12 +81,14 @@ class MainActivity : AppCompatActivity() {
         playButton.text = "⌛"
         progressBar.visibility = View.VISIBLE
 
+        // 3.: Runterladen
         PRDownloader.download(url, path, fileName)
             .build()
             .setOnProgressListener { progress -> progressBar.progress = ((progress.currentBytes.div(progress.totalBytes.toFloat())) * 100).toDouble().roundToInt()}
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
                     Toast.makeText(applicationContext, "Success!", Toast.LENGTH_LONG).show()
+                    // 4. Abspielen
                     mediaPlayer = MediaPlayer.create(applicationContext, Uri.parse(fullPath))
                     mediaPlayer?.start()
                     playButton.text = "■"
