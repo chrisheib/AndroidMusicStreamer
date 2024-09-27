@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         // https://www.baeldung.com/kotlin-khttp
 
         PRDownloader.initialize(applicationContext)
-        val url = "http://192.168.2.109:80/"
+        val url = "http://192.168.56.1:81/songs/random"
 
         // https://gist.github.com/lopspower/76421751b21594c69eb2
         // https://github.com/lopspower/BestAndroidGists
